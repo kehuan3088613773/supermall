@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     imageLoad() {
-      this.$refs.scroll.scroll.refresh()
+      this.$refs.scroll.refresh()
       console.log('aa');
     }
   }
@@ -91,6 +91,15 @@ export default {
   }
 
   .content {
-    height: calc(100% - 44px);
+    /* height: calc(100% - 44px);
+    position: relative; */
+    overflow: hidden;
+    position: absolute;
+    top: 44px;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
   }
 </style>

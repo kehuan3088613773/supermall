@@ -40,6 +40,7 @@
 
   import { getHomeMultidate, getHomeGoods} from "network/home"
   import {debounce} from "common/utils"
+  import {itemListenerMixin} from "common/mixin"
 
   export default {
     data() {
@@ -56,9 +57,9 @@
         tabOffsetTop: 0,
         isTabFixed: false,
         saveY: 0
-
       }
     },
+    mixins: [itemListenerMixin],
     computed: {
       showGoods() {
         return this.goods[this.currentType].list
@@ -71,7 +72,11 @@
       this.$refs.scroll.refresh()
     },
     deactivated() {
+      //1.保存Y值
       this.saveY = this.$refs.scroll.getScrollY()
+
+      //2.取消全局事件的监听
+      this.$bus.$off('itemImgLoad' ,this.ItemImgListerner)
     },
     components: {
       HomeSwiper,
@@ -95,11 +100,15 @@
 
     },
     mounted() {
-      //1.监听item中图片加载完成
-      const refresh = debounce(this.$refs.scroll.refresh,200)
-      this.$bus.$on('itemImageLoad', () => {
-        refresh()
-      })
+      //使用混入代提
+      // //1.监听item中图片加载完成
+
+      // let refresh = debounce(this.$refs.scroll.refresh,200)
+
+      // this.itemImgListerner = () => {
+      //   refresh()
+      // }
+      // this.$bus.$on('itemImageLoad', this.itemImgListerner )
 
 
     },

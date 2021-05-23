@@ -22,7 +22,8 @@
       },
       components: {
         GoodsListItem
-      }
+      },
+
     }
   }
 </script>

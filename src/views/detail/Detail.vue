@@ -8,6 +8,7 @@
       <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"></detail-goods-info>
       <detail-param-info :paramInfo="paramInfo"></detail-param-info>
       <detail-comment-info :commentInfo="commentInfo"></detail-comment-info>
+      <goods-list :goods="recommends"></goods-list>
     </scroll>
   </div>
 </template>
@@ -22,8 +23,11 @@ import DetailParamInfo from './childComps/DetailParamInfo'
 import DetailCommentInfo from './childComps/DetailCommentInfo'
 
 import Scroll from 'components/common/scroll/Scroll'
+import GoodsList from 'components/content/goods/GoodsList'
 
-import {getDetail, Goods, Shop, GoodsParam} from 'network/detail'
+import {getDetail, Goods, Shop, GoodsParam, getRecommend} from 'network/detail'
+import { debounce } from "common/utils";
+import {itemListenerMixin} from "common/mixin"
 export default {
   name: "Detail",
   data() {
@@ -34,9 +38,11 @@ export default {
       shop: {},
       detailInfo: {},
       paramInfo: {},
-      commentInfo: {}
+      commentInfo: {},
+      recommends: []
     }
   },
+  mixins: [itemListenerMixin],
   components: {
     DetailNavBar,
     DetailSwiper,
@@ -45,7 +51,8 @@ export default {
     DetailGoodsInfo,
     DetailParamInfo,
     DetailCommentInfo,
-    Scroll
+    Scroll,
+    GoodsList
   },
   created() {
     //1.保存转入的iid
@@ -54,7 +61,7 @@ export default {
     //2.根据iid请求详情数据
     getDetail(this.iid).then(res => {
       //1.获取顶部的图片轮播数据
-      console.log(res);
+      // console.log(res);
       const data = res.result
 
       //2.取出轮播图的数据
@@ -75,14 +82,36 @@ export default {
       this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule)
 
       //7.取出评论的信息
-      this.commentInfo = data.rate.list[0]
+      this.commentInfo = data.rate.list ? data.rate.list[0] : {}
       console.log(this.commentInfo);
+    })
+
+    //3.请求推荐数据
+    getRecommend().then(res => {
+      this.recommends = res.data.list
+      console.log(this.recommends);
     })
   },
   methods: {
     imageLoad() {
       this.$refs.scroll.refresh()
     }
+  },
+  mounted() {
+    //放到混入去监听
+    // //1.监听item中图片加载完成
+    // let refresh = debounce(this.$refs.scroll.refresh,200)
+
+    // this.itemImgListerner = () => {
+    //   refresh()
+    // }
+    // this.$bus.$on('itemImageLoad', this.itemImgListerner )
+
+    console.log('不是混入');
+  },
+  destroyed() {
+    //2.取消全局事件的监听
+    this.$bus.$off('itemImgLoad' ,this.ItemImgListerner)
   }
 }
 </script>

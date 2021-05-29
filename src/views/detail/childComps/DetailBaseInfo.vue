@@ -82,13 +82,19 @@ export default {
     font-size: 13px;
     border-bottom: 1px solid rgba(100, 100, 100, .1);
     justify-content: space-between;
+    text-align: center;
+    flex-wrap: nowrap;
   }
+
+
 
   .info-service {
     display: flex;
     justify-content: space-between;
     line-height: 45px;
     font-size: 13px;
+    flex-wrap: nowrap;
+    text-align: center;
   }
 
   .info-service .info-service-item {

@@ -181,8 +181,16 @@ export default {
       product.desc = this.goods.desc
       product.price = this.goods.realPrice
       product.iid = this.iid
+      //console.log(product);
 
-      console.log(product);
+      //2.将商品添加到购物车里 -> store
+      //this.$store.cartLish.push(product)  更改state要通过mutations
+      // this.$store.commit('addCart',product)
+      this.$store.dispatch('addCart', product).then(res => {
+        console.log(this.$toast);
+        this.$toast.show(res)
+      })
+
     }
   },
   mounted() {
@@ -219,15 +227,16 @@ export default {
   }
 
   .content {
-    height: calc(100% - 44px - 49px);
+    /* height: calc(100% - 44px - 49px);
     position: relative;
-    overflow: hidden;
-    /* position: absolute;
+    overflow: hidden; */
+    position: absolute;
     top: 44px;
-    bottom: 0;
+    bottom: 49px;
     right: 0;
     left: 0;
     width: 100%;
-    background-color: #fff; */
+    background-color: #fff;
+    overflow: hidden;
   }
 </style>
